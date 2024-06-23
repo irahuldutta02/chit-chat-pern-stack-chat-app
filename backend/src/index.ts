@@ -5,6 +5,10 @@ import messageRouter from "./routes/message.routes";
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.text());
+
 app.get("/", (req, res) => {
   return res.status(200).json({
     status: 200,
