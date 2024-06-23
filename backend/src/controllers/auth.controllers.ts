@@ -3,59 +3,6 @@ import prisma from "../db/prisma";
 import bcryptjs from "bcryptjs";
 import { generateToken } from "../utils/generateToken";
 
-export const login = async (req: Request, res: Response) => {
-  try {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-      return res.status(400).json({
-        status: 400,
-        message: `${!username ? "username" : ""} , ${
-          !password ? "password" : ""
-        } is required`,
-      });
-    }
-
-    const user = await prisma.user.findUnique({ where: { username } });
-
-    if (!user) {
-      return res.status(400).json({
-        status: 400,
-        message: "User not found",
-      });
-    }
-
-    const isMatch = await bcryptjs.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({
-        status: 400,
-        message: "Invalid password",
-      });
-    }
-
-    generateToken(user.id, res);
-
-    return res.status(200).json({
-      status: 200,
-      message: "Login successful",
-      data: {
-        id: user.id,
-        fullName: user.fullName,
-        username: user.username,
-        gender: user.gender,
-        profilePic: user.profilePic,
-      },
-    });
-  } catch (error: any) {
-    console.error("Error in login : ", error.message);
-    return res.status(500).json({
-      status: 500,
-      message: error.message || "Internal Server Error",
-    });
-  }
-};
-
 export const signup = async (req: Request, res: Response) => {
   try {
     const { fullName, username, password, confirmPassword, gender } = req.body;
@@ -142,6 +89,59 @@ export const signup = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     console.error("Error is signup : ", error.message);
+    return res.status(500).json({
+      status: 500,
+      message: error.message || "Internal Server Error",
+    });
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({
+        status: 400,
+        message: `${!username ? "username" : ""} , ${
+          !password ? "password" : ""
+        } is required`,
+      });
+    }
+
+    const user = await prisma.user.findUnique({ where: { username } });
+
+    if (!user) {
+      return res.status(400).json({
+        status: 400,
+        message: "User not found",
+      });
+    }
+
+    const isMatch = await bcryptjs.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        status: 400,
+        message: "Invalid password",
+      });
+    }
+
+    generateToken(user.id, res);
+
+    return res.status(200).json({
+      status: 200,
+      message: "Login successful",
+      data: {
+        id: user.id,
+        fullName: user.fullName,
+        username: user.username,
+        gender: user.gender,
+        profilePic: user.profilePic,
+      },
+    });
+  } catch (error: any) {
+    console.error("Error in login : ", error.message);
     return res.status(500).json({
       status: 500,
       message: error.message || "Internal Server Error",
