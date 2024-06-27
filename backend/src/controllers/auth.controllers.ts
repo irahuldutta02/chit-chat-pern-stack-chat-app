@@ -3,6 +3,39 @@ import prisma from "../db/prisma";
 import bcryptjs from "bcryptjs";
 import { generateToken } from "../utils/generateToken";
 
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true,
+        fullName: true,
+        username: true,
+        gender: true,
+        profilePic: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        status: 400,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: user,
+    });
+  } catch (error: any) {
+    console.error("Error in getMe : ", error.message);
+    return res.status(500).json({
+      status: 500,
+      message: error.message || "Internal Server Error",
+    });
+  }
+};
+
 export const signup = async (req: Request, res: Response) => {
   try {
     const { fullName, username, password, confirmPassword, gender } = req.body;
