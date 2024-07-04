@@ -81,7 +81,7 @@ export const getMessages = async (req: Request, res: Response) => {
       },
     });
 
-    if(!conversation){
+    if (!conversation) {
       return res.status(200).json({
         status: 200,
         data: [],
@@ -91,6 +91,37 @@ export const getMessages = async (req: Request, res: Response) => {
     return res.status(200).json({
       status: 200,
       data: conversation.messages,
+    });
+  } catch (error: any) {
+    console.error("Error in getMe : ", error.message);
+    return res.status(500).json({
+      status: 500,
+      message: error.message || "Internal Server Error",
+    });
+  }
+};
+
+export const getUsersForSidebar = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user.id;
+
+    const users = await prisma.user.findMany({
+      where: {
+        id: {
+          not: userId,
+        },
+      },
+      select: {
+        id: true,
+        fullName: true,
+        profilePic: true,
+        username: true,
+      },
+    });
+
+    return res.status(200).json({
+      status: 200,
+      data: users,
     });
   } catch (error: any) {
     console.error("Error in getMe : ", error.message);
