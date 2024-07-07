@@ -40,7 +40,9 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchAuthUser = async () => {
       try {
-        const response = await axios.get(BACKEND_BASE_URL + "/api/auth/me");
+        const response = await axios.get(BACKEND_BASE_URL + "/api/auth/me", {
+          withCredentials: true,
+        });
 
         if (response?.data?.status === 200) {
           setAuthUser(response?.data?.data);
