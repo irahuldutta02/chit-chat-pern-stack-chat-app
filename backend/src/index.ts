@@ -11,7 +11,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text());
 app.use(cookieParser());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: true,
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 app.get("/", (req, res) => {
   return res.status(200).json({

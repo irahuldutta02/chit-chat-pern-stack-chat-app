@@ -32,7 +32,7 @@ const protectRoute = async (
     if (!token) {
       return res.status(401).json({
         status: 401,
-        message: "Unauthorized",
+        message: "Unauthorized, Token Not Found",
       });
     }
 
@@ -44,7 +44,7 @@ const protectRoute = async (
     if (!decoded) {
       return res.status(401).json({
         status: 401,
-        message: "Unauthorized",
+        message: "Unauthorized, Token Invalid",
       });
     }
 
@@ -64,7 +64,7 @@ const protectRoute = async (
     if (!user) {
       return res.status(401).json({
         status: 401,
-        message: "Unauthorized",
+        message: "Unauthorized, User Not Found",
       });
     }
 
